@@ -29,6 +29,14 @@ with ui.sidebar(open="open"):
         selected=["Adelie", "Gentoo", "Chinstrap"],
         inline=True
     )
+    ui.input_checkbox_group(
+        "selected_island_list",
+        "Filter by Island",
+        ["Torgersen", "Dream", "Biscoe"],
+        selected=["Torgersen", "Dream", "Biscoe"],
+        inline=True
+    )
+
     ui.hr()
     ui.a("GitHub Repo URL", href="https://github.com/Airfirm/cintel-03-reactive", target="_blank")
 
@@ -37,17 +45,22 @@ with ui.sidebar(open="open"):
     def filtered_data():
         df = penguins_df
         df = df[df["species"].isin(input.selected_species_list())]
+        df = df[df["island"].isin(input.selected_island_list())]
         return df
         
 # Main layout - Data Table and Data Grid
 with ui.layout_columns():
-    @render.data_frame
-    def data_table():
-        return render.DataTable(filtered_data())
+    with ui.card(full_screen=True):
+        ui.h2("Penguin Data Table")
+        @render.data_frame
+        def penguins_datatable():
+            return render.DataTable(filtered_data())
 
-    @render.data_frame
-    def data_grid():
-        return render.DataGrid(filtered_data())
+    with ui.card(full_screen=True):
+        ui.h2("Penguin Data Grid")
+        @render.data_frame
+        def penguins_datagrid():
+            return render.DataGrid(filtered_data())
 
 # Main layout - Histograms and Scatterplot
 with ui.layout_columns():
@@ -99,4 +112,4 @@ with ui.card(full_screen=True):
                 input.selected_attribute(): input.selected_attribute().replace('_', ' ').title()
         },
             size_max=8
-        )
+    )
