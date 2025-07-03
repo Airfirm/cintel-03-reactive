@@ -53,3 +53,57 @@ Decorators
 Use the @ symbol to decorate a function with a decorator.
 Decorators a concise way of calling a function on a function.
 We don't typically write decorators, but we often use them.
+
+
+# Create an input for year selection
+ui.input_slider(
+    "selected_year",
+    "Year of Observation",
+    min=2000, max=2020,
+    value=2010,  # Default value
+    step=1
+)
+
+# Assuming penguins_df is a pandas DataFrame with a 'year' column
+isYearMatch = penguins_df["year"].isin([2010])  # <-- What to change here? Replace isin([2010]) with == input.selected_year()
+
+# Filter DataFrame based on the year
+filtered_df_by_year = penguins_df[isYearMatch]
+
+
+# Create an input for island selection
+ui.input_checkbox_group(
+    "selected_island_list",
+    "Islands in Scatterplot",
+    ["Torgersen", "Dream", "Biscoe"],
+    selected=["Torgersen", "Dream"],
+    inline=True,
+)
+
+# Assuming penguins_df is a pandas DataFrame 
+isSpeciesMatch = penguins_df["species"].isin(['Adelie', 'Chinstrap'])
+isIslandMatch = penguins_df["island"].isin(['Dream', 'Biscoe'])  # <-- What to change here? Change ['Dream', 'Biscoe'] to input.selected_island_list()
+
+# Combining conditions with AND (&) to get a filtered DataFrame
+filtered_df_and = penguins_df[isSpeciesMatch & isIslandMatch]
+
+
+# Create an input 
+  ui.input_checkbox_group(
+        "selected_species_list",
+        "Species in Scatterplot",
+        ["Adelie", "Gentoo", "Chinstrap"],
+        selected=["Adelie", "Gentoo", "Chinstrap"],
+        inline=True,
+    )
+
+
+# Assuming penguins_df is a pandas DataFrame 
+isSpeciesMatch = penguins_df["species"].isin(['Adelie', 'Chinstrap']) --input.selected_species_list()
+isIslandMatch = penguins_df["island"].isin(['Dream', 'Biscoe'])
+
+# Combining conditions with AND (&) to get a filtered df
+filtered_df_and = penguins_df[isSpeciesMatch & isIslandMatch]
+
+# Combining conditions with OR (|) to get a filtered df
+filtered_df_or = penguins_df[isSpeciesMatch | isIslandMatch]
