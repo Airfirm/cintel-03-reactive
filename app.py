@@ -30,7 +30,7 @@ with ui.sidebar(open="open"):
         inline=True
     )
     ui.hr()
-    ui.a("GitHub Repo URL", href="https://github.com/Airfirm/cintel-02-data", target="_blank")
+    ui.a("GitHub Repo URL", href="https://github.com/Airfirm/cintel-03-reactive", target="_blank")
 
 # Reactive calculations and effects
     @reactive.calc
