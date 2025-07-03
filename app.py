@@ -35,53 +35,53 @@ with ui.sidebar(open="open"):
 # Reactive calculations and effects
     @reactive.calc
     def filtered_data():
-        return penguins_df
+        df = penguins_df
+        df = df[df["species"].isin(input.selected_species_list())]
+        return df
         
 # Main layout - Data Table and Data Grid
 with ui.layout_columns():
     @render.data_frame
     def data_table():
-        return render.DataTable(penguins_df)
+        return render.DataTable(filtered_data())
 
     @render.data_frame
     def data_grid():
-        return render.DataGrid(penguins_df)
+        return render.DataGrid(filtered_data())
 
 # Main layout - Histograms and Scatterplot
 with ui.layout_columns():
     @render_plotly
     def plot1():
         return px.histogram(
-            penguins_df.dropna(subset=["species", "body_mass_g"]),
-            x="body_mass_g",
-            color="species",  # different colors per species
-            nbins=input.plotly_bin_count(),  # uses sidebar input
-            title="Plotly Histogram of Penguin Body Mass by Species",
-            labels={"body_mass_g": "Body Mass (g)"}
+            filtered_data(),
+            x=input.selected_attribute(),
+            color="species",
+            nbins=input.plotly_bin_count(),
+            title=f"Histogram of {input.selected_attribute()} by Species",
+            labels={input.selected_attribute(): input.selected_attribute().replace('_', ' ').title()}
     )
 
-    @render.plot(alt="Seaborn Histogram by Species")
+    @render.plot(alt="Seaborn Histogram")
     def seaborn_hist():
-        data = penguins_df.dropna(subset=["body_mass_g", "species"])
+        data = filtered_data()
         bins = input.seaborn_bin_count()
-    
-        # Plot histogram for each species
-        for species_name in data["species"].unique():
-            species_data = data[data["species"] == species_name]
+        attr = input.selected_attribute()
+
+        for species in data["species"].unique():
+            species_data = data[data["species"] == species]
             plt.hist(
-                species_data["body_mass_g"],
+                species_data[attr],
                 bins=bins,
                 alpha=0.5,
-                label=species_name,
+                label=species,
                 density=True
     )
-    
-        plt.title("Seaborn Histogram of Body Mass by Species")
-        plt.xlabel("Body Mass (g)")
+        plt.title(f"Seaborn Histogram of {attr.replace('_', ' ').title()} by Species")
+        plt.xlabel(attr.replace('_', ' ').title())
         plt.ylabel("Density")
-        plt.legend(title="Species")
+        plt.legend()
         return plt.gcf()
-
 
 with ui.card(full_screen=True):
     ui.card_header("Plotly Scatterplot: Species")
@@ -89,14 +89,14 @@ with ui.card(full_screen=True):
     @render_plotly
     def plotly_scatterplot():
         return px.scatter(
-            penguins_df,
+            filtered_data(),
             x="bill_length_mm",
-            y="body_mass_g",
+            y=input.selected_attribute(),  # dynamic Y-axis
             color="species",
-            title="Penguins Plot (Plotly Express)",
+            title=f"Scatterplot of Bill Length vs {input.selected_attribute().replace('_', ' ').title()}",
             labels={
                 "bill_length_mm": "Bill Length (mm)",
-                "body_mass_g": "Body Mass (g)"
-            },
+                input.selected_attribute(): input.selected_attribute().replace('_', ' ').title()
+        },
             size_max=8
-    )
+        )
