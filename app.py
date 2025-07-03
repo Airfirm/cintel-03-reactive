@@ -34,9 +34,7 @@ with ui.sidebar(open="open"):
 # Reactive calculations and effects
     @reactive.calc
     def filtered_data():
-        df = penguins_df.dropna()
-        df = df[df["species"].isin(input.selected_species_list())]
-        return df
+        return penguins_df
         
 # Main layout - Data Table and Data Grid
 with ui.layout_columns():
