@@ -107,3 +107,17 @@ filtered_df_and = penguins_df[isSpeciesMatch & isIslandMatch]
 
 # Combining conditions with OR (|) to get a filtered df
 filtered_df_or = penguins_df[isSpeciesMatch | isIslandMatch]
+
+#Data Table and Data Grid
+with ui.layout_columns():
+    with ui.card(full_screen=True):
+        ui.h2("Penguin Data Table")
+        @render.data_frame
+        def penguins_datatable():
+            return render.DataTable(filtered_data())
+
+    with ui.card(full_screen=True):
+        ui.h2("Penguin Data Grid")
+        @render.data_frame
+        def penguins_datagrid():
+            return render.DataGrid(filtered_data())
