@@ -3,9 +3,10 @@ import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
-from shiny.express import input, ui
+from shiny.express import input, render, ui
 from shiny import render
 from shinywidgets import render_plotly
+from shiny import reactive
 
 penguins_df = palmerpenguins.load_penguins()
 
@@ -30,7 +31,7 @@ with ui.sidebar(open="open"):
     )
     ui.hr()
     ui.a("GitHub Repo URL", href="https://github.com/Airfirm/cintel-02-data", target="_blank")
-    
+
 # Reactive calculations and effects
     @reactive.calc
     def filtered_data():
